@@ -1,4 +1,25 @@
-const UserForm = () => {
+import React, {useState} from 'react';
+import {User, UserMutation} from '../../types';
+
+interface Props {
+  onSubmit: (user: User) => void;
+}
+
+const UserForm: React.FC<Props> = ({onSubmit}) => {
+  const [user, setUser] = useState<UserMutation>({
+    name: '',
+    email: '',
+    checkbox: false,
+    role: '',
+  });
+
+  const changeUser = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    setUser((prev) => ({
+      ...prev,
+        [e.target.name]: e.target.value,
+    }));
+  };
+
   return (
     <form>
       <h4>Add new user</h4>
@@ -9,6 +30,8 @@ const UserForm = () => {
           name="name"
           id="name"
           className="form-control"
+          value={user.name}
+          onChange={changeUser}
         />
       </div>
       <div className="form-group mb-3">
@@ -18,13 +41,18 @@ const UserForm = () => {
           name="email"
           id="email"
           className="form-control"
+          value={user.email}
+          onChange={changeUser}
         />
       </div>
       <div className="form-check mb-3">
         <input
           type="checkbox"
+          name="checkbox"
+          id="checkbox"
           className="form-check-input"
-          id="isActive"
+          value={user.checkbox}
+          onChange={changeUser}
         />
         <label className="form-check-label" htmlFor="isActive">
           Активен
@@ -35,16 +63,18 @@ const UserForm = () => {
           Роль:
         </label>
         <select
-          className="form-select"
           id="role"
+          className="form-select"
+          value={user.role}
+          onChange={changeUser}
         >
           <option value="user">Пользователь</option>
           <option value="editor">Редактор</option>
           <option value="admin">Администратор</option>
         </select>
       </div>
-      <button type="submit" className="btn btn-primary">
-        Создать пользователя
+      <button type="submit" className="btn btn-success">
+        Добавить пользователя
       </button>
     </form>
   );
