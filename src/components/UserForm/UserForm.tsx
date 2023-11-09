@@ -1,28 +1,42 @@
 import React, {useState} from 'react';
-import {User, UserMutation} from '../../types';
+import {User} from '../../types';
 
 interface Props {
   onSubmit: (user: User) => void;
 }
 
 const UserForm: React.FC<Props> = ({onSubmit}) => {
-  const [user, setUser] = useState<UserMutation>({
+  const [user, setUser] = useState<User>({
+    id: 0,
     name: '',
     email: '',
     checkbox: false,
     role: '',
   });
 
-  const changeUser = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onSubmit(user);
+    setUser({
+      id: 0,
+      name: '',
+      email: '',
+      checkbox: false,
+      role: '',
+    });
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value, type, checked } = e.target as HTMLInputElement;
     setUser((prev) => ({
       ...prev,
-        [e.target.name]: e.target.value,
+      [name]: type === "checkbox" ? checked : value,
     }));
   };
 
   return (
-    <form>
-      <h4>Add new user</h4>
+    <form onSubmit={handleSubmit}>
+      <h4 className="mb-5">Add new user</h4>
       <div className="form-group mb-3">
         <label htmlFor="name">Name</label>
         <input
@@ -31,7 +45,7 @@ const UserForm: React.FC<Props> = ({onSubmit}) => {
           id="name"
           className="form-control"
           value={user.name}
-          onChange={changeUser}
+          onChange={handleInputChange}
         />
       </div>
       <div className="form-group mb-3">
@@ -42,7 +56,7 @@ const UserForm: React.FC<Props> = ({onSubmit}) => {
           id="email"
           className="form-control"
           value={user.email}
-          onChange={changeUser}
+          onChange={handleInputChange}
         />
       </div>
       <div className="form-check mb-3">
@@ -51,10 +65,10 @@ const UserForm: React.FC<Props> = ({onSubmit}) => {
           name="checkbox"
           id="checkbox"
           className="form-check-input"
-          value={user.checkbox}
-          onChange={changeUser}
+          checked={user.checkbox}
+          onChange={handleInputChange}
         />
-        <label className="form-check-label" htmlFor="isActive">
+        <label className="form-check-label" htmlFor="checkbox">
           Активен
         </label>
       </div>
@@ -65,8 +79,9 @@ const UserForm: React.FC<Props> = ({onSubmit}) => {
         <select
           id="role"
           className="form-select"
+          name="role"
           value={user.role}
-          onChange={changeUser}
+          onChange={handleInputChange}
         >
           <option value="user">Пользователь</option>
           <option value="editor">Редактор</option>
