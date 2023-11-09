@@ -7,7 +7,7 @@ interface Props {
 
 const UserItem: React.FC<Props> = ({user}) => {
   return (
-    <div>
+    <div className="UserItem mb-3">
       <h5>{user.name}</h5>
       <p>Email: {user.email}</p>
       <p>Активен: {user.checkbox ? 'Да' : 'Нет'}</p>
